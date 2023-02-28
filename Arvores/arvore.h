@@ -1,11 +1,11 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<iostream>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 
 using namespace std;
 
 struct noArv {
-    char info;
+    int info;
     struct noArv* esq;
     struct noArv* dir;
 };
@@ -16,7 +16,7 @@ NoArv* arv_criavazia(void) {
     return NULL;
 }
 
-NoArv* arv_cria(char c, NoArv* sae, NoArv* sad) {
+NoArv* arv_cria(int c, NoArv* sae, NoArv* sad) {
     NoArv* p = (NoArv*)malloc(sizeof(NoArv));
     
     if (p == NULL) exit(1);
@@ -51,7 +51,7 @@ void arv_imprime(NoArv* a) {
     }
 }
 
-int arv_pertence(NoArv* a, char c) {
+int arv_pertence(NoArv* a, int c) {
     if (arv_vazia(a)) {
         return 0;
     } else {

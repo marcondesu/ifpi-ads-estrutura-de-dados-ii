@@ -1,0 +1,14 @@
+ARVORES AVL
+
+- a rotação pode ser feita dependendo do resultado do balanceamento
+
+- fator de balanceamento (FB) = altura da subárvore direita 	- altura da subárvore da esquerda - altura da subárvore da direita
+	- se o fator de balanceamento for negativo, as rotações serão feitas à direita
+	- se for positivo, à esquerda
+
+- se for rotacionar à direita, pega o filho da direita
+- se for rotacionar à esquerda, pega o filho da esquerda
+
+- necessário:
+	- uma parte que faz o cálculo do FB para posteriores tomadas de decisão
+	- outra que de fato faz as rotações

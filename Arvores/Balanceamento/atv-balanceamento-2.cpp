@@ -2,34 +2,36 @@
 
 using namespace std;
 
+template <class T>
 class No {
 public:
-    int info;
+    T info;
     No* esquerdo;
     No* direito;
 
-    No(int value) {
+    No(T value) {
         info = value;
         esquerdo = nullptr;
         direito = nullptr;
     }
 };
 
-class ArvoreBinaria {
+template <class T>
+class Arvore {
 public:
-    No* raiz;
+    No<T>* raiz;
     
-    ArvoreBinaria() {
+    Arvore() {
         raiz = nullptr;
     }
 
-    void insere(int valor) {
-        No* novo_no = new No(valor);
+    void insere(T valor) {
+        No<T>* novo_no = new No<T>(valor);
 
         if (raiz == nullptr) {
             raiz = novo_no;
         } else {
-            No* percorre = raiz;
+            No<T>* percorre = raiz;
             
             while (percorre != nullptr) {
                 if (percorre->info < novo_no->info) {
@@ -51,7 +53,7 @@ public:
         }
     }
 
-    void imprimir(No* no) {
+    void imprimir(No<T>* no) {
         if (no != nullptr) {
             imprimir(no->esquerdo);
             cout << no->info << " ";
@@ -59,26 +61,7 @@ public:
         }
     }
 
-    void rotacionar_direita(No** p) {
-        No* q = (*p)->esquerdo;
-        No* temp = q->direito;
-
-        q->direito = (*p);
-        (*p)->esquerdo = temp;
-        (*p) = q;
-    }
-
-    
-    void rotacionar_esquerda(No* p) {
-        No* q = p->direito;
-        No* temp = q->esquerdo;
-
-        q->esquerdo = p;
-        p->direito = temp;
-        p = q;
-    }
-
-    int altura(No* no) {
+    int altura(No<T>* no) {
         if (no == nullptr) {
             return 0;
         }
@@ -89,7 +72,7 @@ public:
         return 1 + max(altura_esquerda, altura_direita);
     }
 
-    int qtd_nos(No* no) {
+    int qtd_nos(No<T>* no) {
         if (no == nullptr) {
             return 0;
         }
@@ -97,45 +80,37 @@ public:
         return 1 + qtd_nos(no->esquerdo) + qtd_nos(no->direito);
     }
 
-    int maior_potencia2_menor_que_n(int n) {
-        int potencia = 1;
+    void criar_backbone() {
+        No<T>* current = raiz;
+        No<T>* prev = nullptr;
 
-        while (potencia * 2 < n) {
-            potencia *= 2;
+        while (current != nullptr) {
+            if (current->esquerdo != nullptr) {
+                rotacionar_direita(current, prev);
+
+                current = prev->direito;
+            } else {
+                prev = current;
+                current = current->direito;
+            }
         }
-
-        return potencia;
     }
 
-    void balancear_dsw() { // rotações à direita até que a árvore fique desbalanceada
-        No* atual = raiz;
+    void rotacionar_direita(No<T>*& no, No<T>*& prev) {
+        No<T>* filho_esquerdo = no->esquerdo;
+        no->esquerdo = filho_esquerdo->direito;
+        filho_esquerdo->direito = no;
 
-        while (atual != nullptr) {
-            if (atual->esquerdo != nullptr) {
-                rotacionar_direita(&atual);
-                atual = atual->direito;
-            } else {
-                atual = atual->direito;
-            }
-        }
-
-        // rotações à esquerda para balancear a árvore
-        int n = qtd_nos(raiz); // total de nós na árvore
-        int m = maior_potencia2_menor_que_n(n + 1); // encontrar a maior potência de 2 menor que n + 1
-        atual = raiz;
-
-        for (int i = n - m; i > 0; i--) {
-            rotacionar_esquerda(atual);
-
-            if (atual->direito != nullptr) {
-                atual = atual->direito;
-            }
+        if (prev != nullptr) {
+            prev->direito = filho_esquerdo;
+        } else {
+            raiz = filho_esquerdo;
         }
     }
 };
 
 int main() {
-    ArvoreBinaria arv;
+    Arvore<int> arv;
 
     arv.insere(7);
     arv.insere(22);
@@ -150,30 +125,34 @@ int main() {
     cout << "\n1.2) ";
     arv.imprimir(arv.raiz);
     
-    arv.balancear_dsw();
+    arv.criar_backbone();
     cout << "\n\n1.5) ";
-    arv.imprimir(arv.raiz); // altura errada
+    arv.imprimir(arv.raiz);
+
+    cout << "(" << arv.altura(arv.raiz) << " de altura e ";
+    cout << arv.qtd_nos(arv.raiz) << " nos)";
     
     return 0;
 }
 
 /*
 
-Atividade Balanceamento 1:
+Perguntas e respostas:
 
 1) Inclua os seguintes valores na seguinte ordem em uma árvore binária: 7, 22, 14, 40, 63, 80.
 1.1) Qual a altura da árvore resultante?
     A árvore possui 5 de altura.
 
 1.2) Mostre a árvore resultante.
-    Utilizando o método imprimir, obtemos o seguinte resultado: 6 7 14 22 40 63
+    Utilizando o método imprimir, obtemos o seguinte resultado: "6 7 14 22 40 63".
 
 1.3) A árvore resultante está balanceada ou não?
     Não está.
 
 1.4) Implemente a 1ª parte do algoritmo DSW, onde a resultante da árvore após as rotações deve ser uma árvore somente com filhos a esquerda.
-    
+    Método criar_backbone() na classe Arvore.
 
 1.5) Mostre a árvore resultante.
+    Linha 129. 
 
 */

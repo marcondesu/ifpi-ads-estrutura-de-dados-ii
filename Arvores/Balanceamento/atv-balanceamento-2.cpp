@@ -144,7 +144,7 @@ Perguntas e respostas:
     A árvore possui 5 de altura.
 
 1.2) Mostre a árvore resultante.
-    Utilizando o método imprimir, obtemos o seguinte resultado: "6 7 14 22 40 63".
+    Utilizando o método imprimir, obtemos o seguinte resultado: "7 14 22 30 40 63 80".
 
 1.3) A árvore resultante está balanceada ou não?
     Não está.
